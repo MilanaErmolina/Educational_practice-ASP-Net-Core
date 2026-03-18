@@ -1,0 +1,18 @@
+﻿@model Shop.Data.Models.Car
+
+<h1>Удаление автомобиля</h1>
+<h3>Вы уверены, что хотите удалить?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Название</dt>
+        <dd class="col-sm-10">@Model.name</dd>
+        <dt class="col-sm-2">Цена</dt>
+        <dd class="col-sm-10">@Model.price.ToString("c")</dd>
+    </dl>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="id" />
+        <input type="submit" value="Удалить" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>

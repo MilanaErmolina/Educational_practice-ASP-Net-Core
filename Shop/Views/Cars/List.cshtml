@@ -1,0 +1,18 @@
+﻿@model CarsListViewModel
+
+<h1>Все автомобили</h1>
+<h3>@Model?.currCategory</h3>
+
+@if (Model?.allCars == null || !Model.allCars.Any())
+{
+    <div class="alert alert-info">Автомобили не найдены</div>
+}
+else
+{
+    <div class="row mt-5 mb-2">
+        @foreach (var car in Model.allCars)
+        {
+            @Html.Partial("AllCars", car)
+        }
+    </div>
+}
