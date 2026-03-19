@@ -1,0 +1,154 @@
+﻿@page
+@model HelloRazorPage.Pages.Users.UsersPageModel
+
+@{
+    ViewData["Title"] = "Упраление пользователями";
+}
+
+<h1> @ViewData["Title"] </h1>
+
+<form method="post">
+    <div class="form-group">
+        <input type="hidden" asp-for="CurrentUser.Id" />
+
+        <div class="form-group">
+            <label asp-for="CurrentUser.Login"></label>
+            <input asp-for="CurrentUser.Login" class="form-control" id="CurrentUser_Login" />
+            <span asp-validation-for="CurrentUser.Login" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CurrentUser.Password"></label>
+            <input asp-for="CurrentUser.Password" class="form-control" id="CurrentUser_Password" />
+            <span asp-validation-for="CurrentUser.Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-2">
+            <button type="submit" asp-page-handler="Save" class="btn btn-primary">Сохранить</button>
+            <button type="button" id="resetBtn" class="btn btn-secondary">Сбросить</button>
+        </div>
+
+    </div>
+</form>
+
+<table class="table mt-4">
+    @if (Model != null)
+    {
+        if (Model.Users.Count == 0)
+        {
+            <div class="no-found">
+                <p>Пользователи не найдены</p>
+                <a href="@Url.Action("UsersPage")" class="refresh-button">Обновить список</a>
+            </div>
+
+            return;
+        }
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Логин</th>
+                <th>Пароль</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr data-user-id="@user.Id">
+                    <td>@user.Id</td>
+                    <td>@user.Login</td>
+                    <td>@user.Password</td>
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm select-user" data-id="@user.Id">Выбрать</button>
+                        <button type="button" class="btn btn-danger btn-sm delete-user" data-id="@user.Id">Удалить</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    }
+    else
+    {
+        <div class="no-found">
+            <p>Пользователи не найдены</p>
+            <a href="@Url.Action("UsersPage")" class="refresh-button">Обновить список</a>
+        </div>
+    }
+</table>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Обработчик кнопки "Выбрать"
+            document.querySelectorAll('.select-user').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    selectUser(id);
+                });
+            });
+
+            // Обработчик кнопки "Удалить"
+            document.querySelectorAll('.delete-user').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    deleteUser(id);
+                });
+            });
+
+            // Обработчик кнопки "Сбросить"
+            document.getElementById("resetBtn").addEventListener("click", () => {
+                document.getElementById("CurrentUser_Id").value = "";
+                document.getElementById("CurrentUser_Login").value = "";
+                document.getElementById("CurrentUser_Password").value = "";
+            });
+        });
+
+        async function selectUser(id) {
+            const response = await fetch(
+                `/Users/UsersPage?handler=User&id=${id}`,
+                {
+                    headers: {
+                        "Accept": "application/json",
+                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                console.error("Ошибка при выборе пользователя");
+                return;
+            }
+
+            const user = await response.json();
+
+            document.getElementById("CurrentUser_Id").value = user.id;
+            document.getElementById("CurrentUser_Login").value = user.login;
+            document.getElementById("CurrentUser_Password").value = user.password;
+        }
+
+        async function deleteUser(id) {
+            if (!confirm("Удалить пользователя?"))
+                return;
+
+            const response = await fetch(
+                `/Users/UsersPage?handler=Delete&id=${id}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value,
+                        "Content-type": "application/x-www-form-urlencoded"
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                console.error("Ошибка при удалении пользователя");
+            }
+            else {
+                const row = document.querySelector(`tr[data-user-id="${id}"]`);
+                if (row) row.remove();
+            }
+        }
+    </script>
+}
