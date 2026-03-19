@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Shop.Data.Models.Car>
+
+<h1>Управление автомобилями</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Добавить новый автомобиль</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Краткое описание</th>
+            <th>Цена</th>
+            <th>Категория</th>
+            <th>Избранный</th>
+            <th>Доступен</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.id</td>
+                <td>@item.name</td>
+                <td>@item.shortDesc</td>
+                <td>@item.price.ToString("c")</td>
+                <td>@item.Category?.categoryName</td>
+                <td>@(item.isFavourite ? "Да" : "Нет")</td>
+                <td>@(item.available ? "Да" : "Нет")</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-warning">Редактировать</a>
+                    <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-sm btn-danger">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,63 @@
+﻿@model Shop.Data.Models.Car
+@Html.ValidationSummary(true)
+
+<h1>Добавление автомобиля</h1>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="shortDesc" class="control-label"></label>
+                <input asp-for="shortDesc" class="form-control" />
+                <span asp-validation-for="shortDesc" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="longDesc" class="control-label"></label>
+                <textarea asp-for="longDesc" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="longDesc" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="price" class="control-label"></label>
+                <input asp-for="price" class="form-control" />
+                <span asp-validation-for="price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="categoryID" class="control-label"></label>
+                <select asp-for="categoryID" class="form-control" asp-items="ViewBag.Categories"></select>
+                <span asp-validation-for="categoryID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <input asp-for="isFavourite" class="form-check-input" />
+                <label asp-for="isFavourite" class="form-check-label"></label>
+            </div>
+
+            <div class="form-group form-check">
+                <input asp-for="available" class="form-check-input" />
+                <label asp-for="available" class="form-check-label"></label>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="img" class="control-label"></label>
+                <input type="file" name="uploadedFile" class="form-control" />
+                <span asp-validation-for="img" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Назад</a>
+            </div>
+        </form>
+    </div>
+</div>
